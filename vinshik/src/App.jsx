@@ -1,28 +1,48 @@
+// React and Router imports
 import { useEffect, useState } from "react";
 import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
+
+// Firebase imports for authentication and database
 import { onAuthStateChanged, signOut } from "firebase/auth";
 import { collection, getDocs } from "firebase/firestore";
+
+// Local imports
 import "./App.css";
 import { db, auth } from "./firebase";
 import Login from "./login";
 import Signup from "./signup";
 
-// Dashboard Component
+/**
+ * Dashboard Component
+ * Main dashboard interface with sidebar navigation, header, and statistics cards
+ */
 function Dashboard() {
-  const [stats, setStats] = useState([]);
-  const [showProfileDropdown, setShowProfileDropdown] = useState(false);
-  const [showProfileBox, setShowProfileBox] = useState(false);
+  // State management for dashboard functionality
+  const [stats, setStats] = useState([]); // Firestore data
+  const [showProfileDropdown, setShowProfileDropdown] = useState(false); // Legacy dropdown state
+  const [showProfileBox, setShowProfileBox] = useState(false); // Profile sidebar visibility
 
-  // Fetch data from Firestore
+  /**
+   * Fetch data from Firestore database
+   * Retrieves statistics data from the 'stats' collection
+   */
   useEffect(() => {
     const fetchData = async () => {
-      const querySnapshot = await getDocs(collection(db, "stats"));
-      const data = querySnapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
-      setStats(data);
+      try {
+        const querySnapshot = await getDocs(collection(db, "stats"));
+        const data = querySnapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
+        setStats(data);
+      } catch (error) {
+        console.error("Error fetching stats:", error);
+      }
     };
     fetchData();
   }, []);
 
+  /**
+   * Handle user logout
+   * Signs out the current user from Firebase authentication
+   */
   const handleLogout = async () => {
     try {
       await signOut(auth);
@@ -31,35 +51,82 @@ function Dashboard() {
     }
   };
 
-  // Close dropdown when clicking outside
+  /**
+   * Handle click outside events for dropdowns and profile box
+   * Closes dropdowns and profile box when clicking outside their boundaries
+   */
   useEffect(() => {
     const handleClickOutside = (event) => {
+      // Close profile dropdown if clicking outside
       if (showProfileDropdown && !event.target.closest('.profile-dropdown')) {
         setShowProfileDropdown(false);
       }
+      // Close profile box if clicking outside (but not on the avatar button)
       if (showProfileBox && !event.target.closest('.profile-box') && !event.target.closest('.avatar-button')) {
         setShowProfileBox(false);
       }
     };
 
+    // Add event listener for mouse clicks
     document.addEventListener('mousedown', handleClickOutside);
+    
+    // Cleanup event listener on component unmount
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
   }, [showProfileDropdown, showProfileBox]);
 
-  // Sample data for the dashboard cards
+  /**
+   * Sample dashboard data for statistics cards
+   * Each card contains: title, value, change percentage, trend direction, and styling colors
+   */
   const dashboardData = [
-    { id: 1, title: "Active Jobs", value: "43.7k", change: "+5.2%", positive: true, color: "#4F46E5", chartColor: "#818CF8" },
-    { id: 2, title: "Jobs In Progress", value: "92.3k", change: "-3.1%", positive: false, color: "#F59E0B", chartColor: "#FCD34D" },
-    { id: 3, title: "Finished Jobs", value: "66.3k", change: "+3.4%", positive: true, color: "#10B981", chartColor: "#6EE7B7" },
-    { id: 4, title: "New Leads", value: "92.3k", change: "+5.1%", positive: true, color: "#8B5CF6", chartColor: "#C4B5FD" },
+    { 
+      id: 1, 
+      title: "Active Jobs", 
+      value: "43.7k", 
+      change: "+5.2%", 
+      positive: true, 
+      color: "#4F46E5", 
+      chartColor: "#818CF8" 
+    },
+    { 
+      id: 2, 
+      title: "Jobs In Progress", 
+      value: "92.3k", 
+      change: "-3.1%", 
+      positive: false, 
+      color: "#F59E0B", 
+      chartColor: "#FCD34D" 
+    },
+    { 
+      id: 3, 
+      title: "Finished Jobs", 
+      value: "66.3k", 
+      change: "+3.4%", 
+      positive: true, 
+      color: "#10B981", 
+      chartColor: "#6EE7B7" 
+    },
+    { 
+      id: 4, 
+      title: "New Leads", 
+      value: "92.3k", 
+      change: "+5.1%", 
+      positive: true, 
+      color: "#8B5CF6", 
+      chartColor: "#C4B5FD" 
+    },
   ];
 
   return (
     <div className="app">
+      {/* Left Sidebar Navigation */}
       <div className="sidebar">
+        {/* Brand Logo */}
         <h1>Vin<span style={{ color: "black" }}>Shik</span></h1>
+        
+        {/* Navigation Menu */}
         <nav>
           <button className="active">
             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -123,12 +190,17 @@ function Dashboard() {
         </nav>
       </div>
 
+      {/* Main Content Area */}
       <div className="main">
+        {/* Header Section */}
         <div className="header">
+          {/* Welcome Message */}
           <div className="welcome">
             <h2>Welcome back, Julie 👋</h2>
             <p>Here's what you need to focus on today</p>
           </div>
+          
+          {/* Profile Section */}
           <div className="profile">
             <button className="icon-button">
               <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -142,6 +214,7 @@ function Dashboard() {
                 <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
               </svg>
             </button>
+            {/* Profile Avatar Button - Opens Profile Box */}
             <button 
               className="avatar-button"
               onClick={() => setShowProfileBox(!showProfileBox)}
@@ -153,19 +226,26 @@ function Dashboard() {
           </div>
         </div>
 
+        {/* Dashboard Content */}
         <div className="dashboard">
+          {/* Statistics Cards Grid */}
           <div className="stats">
             {dashboardData.map((stat) => (
               <div key={stat.id} className="card">
+                {/* Card Header with Title and Change Percentage */}
                 <div className="card-header">
                   <h3>{stat.title}</h3>
                   <p className={`change ${stat.positive ? "positive" : "negative"}`}>
                     {stat.change}
                   </p>
                 </div>
+                
+                {/* Main Value Display */}
                 <p className="value">{stat.value}</p>
+                
+                {/* Mini Chart Visualization */}
                 <div className="chart">
-                  {/* Simple bar chart visualization */}
+                  {/* Simple SVG bar chart with varying opacity for visual effect */}
                   <svg width="100%" height="30" viewBox="0 0 100 30">
                     <rect x="0" y="5" width="10" height="20" rx="2" fill={stat.chartColor} opacity="0.3" />
                     <rect x="15" y="10" width="10" height="15" rx="2" fill={stat.chartColor} opacity="0.4" />
@@ -176,6 +256,8 @@ function Dashboard() {
                     <rect x="90" y="4" width="10" height="21" rx="2" fill={stat.chartColor} />
                   </svg>
                 </div>
+                
+                {/* Color Bar at Bottom */}
                 <div className="bar" style={{ background: stat.color }}></div>
               </div>
             ))}
@@ -183,123 +265,150 @@ function Dashboard() {
                  </div>
        </div>
 
-       {/* Profile Box */}
-       <div className={`profile-overlay ${showProfileBox ? 'open' : ''}`} onClick={() => setShowProfileBox(false)}></div>
-       <div className={`profile-box ${showProfileBox ? 'open' : ''}`}>
-         <div className="profile-box-header">
-           <h3>Julie Anderson</h3>
-           <p>julie.anderson@example.com</p>
-         </div>
-         <div className="profile-box-content">
-           <div className="profile-section">
-             <h4>
-               <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                 <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
-                 <circle cx="12" cy="7" r="4"></circle>
-               </svg>
-               Profile
-             </h4>
-             <button className="profile-option">
-               <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                 <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
-                 <circle cx="12" cy="7" r="4"></circle>
-               </svg>
-               Edit Profile
-             </button>
-             <button className="profile-option">
-               <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                 <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path>
-                 <rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect>
-               </svg>
-               Change Password
-             </button>
-           </div>
+               {/* Profile Box Overlay and Sidebar */}
+        {/* Semi-transparent overlay that closes the profile box when clicked */}
+        <div className={`profile-overlay ${showProfileBox ? 'open' : ''}`} onClick={() => setShowProfileBox(false)}></div>
+        
+        {/* Profile Sidebar Panel */}
+        <div className={`profile-box ${showProfileBox ? 'open' : ''}`}>
+          {/* Profile Header with User Info */}
+          <div className="profile-box-header">
+            <h3>Julie Anderson</h3>
+            <p>julie.anderson@example.com</p>
+          </div>
+          
+          {/* Profile Content Sections */}
+          <div className="profile-box-content">
+                       {/* Profile Management Section */}
+            <div className="profile-section">
+              <h4>
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                  <circle cx="12" cy="7" r="4"></circle>
+                </svg>
+                Profile
+              </h4>
+              {/* Edit Profile Option */}
+              <button className="profile-option">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                  <circle cx="12" cy="7" r="4"></circle>
+                </svg>
+                Edit Profile
+              </button>
+              {/* Change Password Option */}
+              <button className="profile-option">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path>
+                  <rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect>
+                </svg>
+                Change Password
+              </button>
+            </div>
 
-           <div className="profile-section">
-             <h4>
-               <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                 <circle cx="12" cy="12" r="3"></circle>
-                 <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
-               </svg>
-               Settings
-             </h4>
-             <button className="profile-option">
-               <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                 <circle cx="12" cy="12" r="3"></circle>
-                 <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
-               </svg>
-               Preferences
-             </button>
-             <button className="profile-option">
-               <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                 <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
-                 <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
-               </svg>
-               Notifications
-             </button>
-           </div>
+                       {/* Settings Section */}
+            <div className="profile-section">
+              <h4>
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <circle cx="12" cy="12" r="3"></circle>
+                  <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+                </svg>
+                Settings
+              </h4>
+              {/* Preferences Option */}
+              <button className="profile-option">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <circle cx="12" cy="12" r="3"></circle>
+                  <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+                </svg>
+                Preferences
+              </button>
+              {/* Notifications Option */}
+              <button className="profile-option">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+                  <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+                </svg>
+                Notifications
+              </button>
+            </div>
 
-           <div className="profile-section">
-             <h4>
-               <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                 <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
-                 <polyline points="16,17 21,12 16,7"></polyline>
-                 <line x1="21" y1="12" x2="9" y2="12"></line>
-               </svg>
-               Support
-             </h4>
-             <button className="profile-option">
-               <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                 <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
-                 <polyline points="16,17 21,12 16,7"></polyline>
-                 <line x1="21" y1="12" x2="9" y2="12"></line>
-               </svg>
-               Help & Support
-             </button>
-             <button className="profile-option">
-               <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                 <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
-                 <line x1="12" y1="9" x2="12" y2="13"></line>
-                 <line x1="12" y1="17" x2="12.01" y2="17"></line>
-               </svg>
-               About
-             </button>
-           </div>
+                       {/* Support Section */}
+            <div className="profile-section">
+              <h4>
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+                  <polyline points="16,17 21,12 16,7"></polyline>
+                  <line x1="21" y1="12" x2="9" y2="12"></line>
+                </svg>
+                Support
+              </h4>
+              {/* Help & Support Option */}
+              <button className="profile-option">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+                  <polyline points="16,17 21,12 16,7"></polyline>
+                  <line x1="21" y1="12" x2="9" y2="12"></line>
+                </svg>
+                Help & Support
+              </button>
+              {/* About Option */}
+              <button className="profile-option">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
+                  <line x1="12" y1="9" x2="12" y2="13"></line>
+                  <line x1="12" y1="17" x2="12.01" y2="17"></line>
+                </svg>
+                About
+              </button>
+            </div>
 
-           <button className="profile-option logout" onClick={handleLogout}>
-             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-               <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
-               <polyline points="16,17 21,12 16,7"></polyline>
-               <line x1="21" y1="12" x2="9" y2="12"></line>
-             </svg>
-             Logout
-           </button>
+            {/* Logout Button */}
+            <button className="profile-option logout" onClick={handleLogout}>
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+                <polyline points="16,17 21,12 16,7"></polyline>
+                <line x1="21" y1="12" x2="9" y2="12"></line>
+              </svg>
+              Logout
+            </button>
          </div>
        </div>
      </div>
    );
  }
 
-// Protected Route Component
+/**
+ * Protected Route Component
+ * Wraps routes that require authentication
+ * Redirects to login if user is not authenticated
+ */
 function ProtectedRoute({ children }) {
+  // State for user authentication status
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
 
+  /**
+   * Listen for authentication state changes
+   * Updates user state and loading status when auth state changes
+   */
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       setUser(user);
       setLoading(false);
     });
 
+    // Cleanup subscription on component unmount
     return () => unsubscribe();
   }, []);
 
+    // Show loading spinner while checking authentication
   if (loading) {
     return (
-      <div style={{ 
-        display: 'flex', 
-        justifyContent: 'center', 
-        alignItems: 'center', 
+      <div style={{
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
         height: '100vh',
         fontSize: '18px',
         color: '#64748b'
@@ -309,10 +418,12 @@ function ProtectedRoute({ children }) {
     );
   }
 
+  // Redirect to login if user is not authenticated
   if (!user) {
     return <Navigate to="/login" replace />;
   }
 
+  // Render protected content if user is authenticated
   return children;
 }
 

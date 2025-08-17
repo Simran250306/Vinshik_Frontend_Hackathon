@@ -1,114 +1,63 @@
-/* Global CSS Reset and Base Styles */
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box; /* Include padding and border in element's width and height */
-  font-family: 'Inter', sans-serif; /* Modern, clean sans-serif font for the entire app */
+.auth-container {
+  width: 300px;
+  margin: 100px auto;
+  padding: 20px;
+  border-radius: 10px;
+  background: #f9f9f9;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+  text-align: center;
 }
 
-/* Page background */
-body {
-  background-color: #f5f5f5; /* Light gray background for better contrast with white cards */
+.auth-container input {
+  width: 90%;
+  padding: 10px;
+  margin: 8px 0;
+  border: 1px solid #ccc;
+  border-radius: 5px;
 }
 
-/* Main application container - uses flexbox for sidebar and main content layout */
+.auth-container button {
+  width: 100%;
+  padding: 10px;
+  margin-top: 10px;
+  background: #4caf50;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.auth-container button:hover:not(:disabled) {
+  background: #45a049;
+}
+
+.auth-container button:disabled {
+  background: #cccccc;
+  cursor: not-allowed;
+}
+
+.auth-container input:disabled {
+  background: #f5f5f5;
+  cursor: not-allowed;
+}
+
+.error {
+  color: red;
+  margin-top: 10px;
+}
+
+/* Dashboard Styles */
 .app {
-  display: flex; /* Creates a horizontal layout for sidebar and main content */
-  height: 100vh; /* Full viewport height to fill the entire screen */
+  display: flex;
+  min-height: 100vh;
 }
 
-/* Sidebar Styles - Navigation panel on the left side */
 .sidebar {
-  width: 250px; /* Fixed width for the sidebar */
-  background-color: white; /* White background for clean look */
-  padding: 20px; /* Consistent padding around content */
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
-  display: flex;
-  flex-direction: column; /* Stack logo and navigation vertically */
-}
-
-/* Logo styling */
-.sidebar h1 {
-  color: #0ea5e9; /* Brand blue color for the first part of logo */
-  margin-bottom: 30px; /* Space between logo and navigation */
-  font-size: 24px; /* Larger font size for logo */
-}
-
-/* Navigation menu container */
-.sidebar nav {
-  display: flex;
-  flex-direction: column; /* Stack navigation buttons vertically */
-  gap: 8px; /* Consistent spacing between navigation items */
-}
-
-/* Navigation button styling */
-.sidebar button {
-  display: flex;
-  align-items: center; /* Center icon and text vertically */
-  gap: 12px; /* Space between icon and text */
-  padding: 10px 12px; /* Comfortable padding for clickable area */
-  border-radius: 6px; /* Rounded corners for modern look */
-  border: none; /* Remove default button border */
-  background: transparent; /* Transparent background by default */
-  color: #64748b; /* Slate gray color for inactive items */
-  font-size: 14px; /* Smaller font size for navigation items */
-  text-align: left; /* Left-align text for better readability */
-  cursor: pointer; /* Hand cursor on hover */
-  transition: all 0.2s ease; /* Smooth transition for hover effects */
-}
-
-/* Hover effect for navigation buttons */
-.sidebar button:hover {
-  background-color: #f1f5f9; /* Light background on hover */
-  color: #0ea5e9; /* Brand blue color on hover */
-}
-
-/* Active/selected navigation button */
-.sidebar button.active {
-  background-color: #e0f2fe; /* Light blue background for active state */
-  color: #0ea5e9; /* Brand blue color for active state */
-}
-
-/* Icon color for inactive navigation buttons */
-.sidebar button svg {
-  color: #64748b; /* Match text color for icons */
-}
-
-/* Icon color for active navigation button */
-.sidebar button.active svg {
-  color: #0ea5e9; /* Brand blue color for active state icons */
-}
-
-/* Main Content Styles - Right side content area */
-.main {
-  flex: 1; /* Take up remaining space after sidebar */
-  padding: 20px 30px; /* Comfortable padding around content */
-  overflow-y: auto; /* Enable scrolling for overflow content */
-  background-color: #f8fafc; /* Very light blue-gray background */
-}
-
-/* Header Styles - Top section with welcome message and profile */
-.header {
-  display: flex;
-  flex-direction: column; /* Stack welcome and profile vertically */
-  margin-bottom: 30px; /* Space between header and dashboard */
-}
-
-/* Welcome message heading */
-.welcome h2 {
-  font-size: 24px; /* Larger font for greeting */
-  color: #1e293b; /* Dark slate color for better readability */
-  margin-bottom: 5px; /* Small space between heading and subtext */
-}
-
-/* Welcome message subtext */
-.welcome p {
-  color: #64748b; /* Lighter color for secondary text */
-  font-size: 14px; /* Smaller font for subtext */
-}
-
-/* Profile section with buttons and avatar */
-.profile {
+  width: 250px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  padding: 20px;
   display: flex;
   align-items: center; /* Center items vertically */
   gap: 15px; /* Space between profile elements */
@@ -116,9 +65,9 @@ body {
   padding: 8px 15px; /* Padding inside the profile box */
   border-radius: 10px; /* Rounded corners for the profile box */
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
-  align-self: flex-start; /* Align to the left side of the header */
+  align-self: flex-end; /* Align to the right side of the header */
   margin-bottom: 20px; /* Add space between profile and welcome message */
-  width: 100%; /* Extend the box width to fill the entire width */
+  width: 150px; /* Extend the box width to the left */
   justify-content: flex-end; /* Align items to the right side of the box */
 }
 
@@ -160,73 +109,49 @@ body {
 /* Statistics cards grid layout */
 .stats {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); /* Responsive grid with minimum card width */
-  gap: 20px; /* Space between cards */
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 20px;
 }
 
 /* Individual statistic card */
 .card {
-  background-color: white; /* White background for clean look */
-  border-radius: 12px; /* Rounded corners for modern look */
-  padding: 20px; /* Consistent padding inside cards */
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
-  position: relative; /* For positioning the colored bar at bottom */
-  overflow: hidden; /* Hide overflow for clean appearance */
+  background: white;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+  position: relative;
+  overflow: hidden;
 }
 
-/* Card header with title and percentage change */
-.card-header {
-  display: flex;
-  justify-content: space-between; /* Push title and change indicator to opposite ends */
-  align-items: center; /* Center items vertically */
-  margin-bottom: 10px; /* Space between header and value */
-}
-
-/* Card title */
 .card h3 {
-  font-size: 14px; /* Smaller font for card title */
-  color: #64748b; /* Slate gray color for secondary text */
-  font-weight: 500; /* Medium weight for better readability */
+  margin: 0 0 10px 0;
+  color: #333;
 }
 
-/* Main statistic value */
 .value {
-  font-size: 28px; /* Large font for emphasis on the main value */
-  font-weight: bold; /* Bold weight for emphasis */
-  color: #1e293b; /* Dark slate color for better readability */
-  margin-bottom: 15px; /* Space between value and chart */
+  font-size: 2rem;
+  font-weight: bold;
+  margin: 10px 0;
+  color: #667eea;
 }
 
-/* Percentage change indicator */
 .change {
-  font-size: 12px; /* Small font for percentage */
-  font-weight: 500; /* Medium weight for better readability */
-  padding: 2px 8px; /* Padding for pill-shaped background */
-  border-radius: 100px; /* Fully rounded for pill shape */
+  margin: 5px 0;
+  font-weight: bold;
 }
 
-/* Positive change styling (green) */
-.positive {
-  color: #10b981; /* Green text for positive change */
-  background-color: rgba(16, 185, 129, 0.1); /* Light green background */
+.change.positive {
+  color: #4caf50;
 }
 
-/* Negative change styling (red) */
-.negative {
-  color: #ef4444; /* Red text for negative change */
-  background-color: rgba(239, 68, 68, 0.1); /* Light red background */
+.change.negative {
+  color: #f44336;
 }
 
-/* Chart container */
-.chart {
-  margin-bottom: 10px; /* Space between chart and bottom of card */
-}
-
-/* Colored bar at bottom of card */
 .bar {
-  position: absolute; /* Position at bottom of card */
+  position: absolute;
   bottom: 0;
   left: 0;
-  height: 4px; /* Thin bar for subtle indicator */
-  width: 100%; /* Full width of card */
+  height: 4px;
+  width: 100%;
 }

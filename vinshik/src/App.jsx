@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
-import { onAuthStateChanged } from "firebase/auth";
+import { onAuthStateChanged, signOut } from "firebase/auth";
 import { collection, getDocs } from "firebase/firestore";
 import "./App.css";
 import { db, auth } from "./firebase";

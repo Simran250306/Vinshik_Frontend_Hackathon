@@ -44,33 +44,41 @@ export default function Login() {
   };
 
   return (
-    <div className="auth-container">
-      <h2>Login</h2>
-      <form onSubmit={handleLogin}>
-        <input
-          type="email"
-          placeholder="Enter Email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          required
-          disabled={loading}
-        />
-        <input
-          type="password"
-          placeholder="Enter Password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          required
-          disabled={loading}
-        />
-        <button type="submit" disabled={loading}>
-          {loading ? "Logging in..." : "Login"}
-        </button>
-        {error && <p className="error">{error}</p>}
-      </form>
-      <p>
-        Don't have an account? <a href="/signup">Signup</a>
-      </p>
+    <div className="auth-wrapper">
+      <div className="auth-card">
+        <h2 className="auth-title">Welcome Back! 👋</h2>
+        <p className="auth-subtitle">Sign in to access your dashboard</p>
+
+        <form className="auth-form" onSubmit={handleLogin}>
+          <input
+            type="email"
+            placeholder="Enter Email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            required
+            disabled={loading}
+          />
+          <input
+            type="password"
+            placeholder="Enter Password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            required
+            disabled={loading}
+          />
+          <button type="submit" disabled={loading}>
+            {loading ? "Signing In..." : "Sign In"}
+          </button>
+          {error && <p className="error">{error}</p>}
+        </form>
+
+        <p className="auth-footer">
+          Don't have an account?{" "}
+          <a href="/signup" className="auth-link">
+            Sign Up
+          </a>
+        </p>
+      </div>
     </div>
   );
 }

@@ -4,7 +4,7 @@ import { auth, db } from "./firebase";
 import { onAuthStateChanged, signOut } from "firebase/auth";
 import { useNavigate } from "react-router-dom";
 import { addSampleData } from "./sampleData";
-import "./App.css";
+import "./Dashboard.css";
 
 export default function Dashboard() {
   const [stats, setStats] = useState([]);
@@ -14,17 +14,14 @@ export default function Dashboard() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    // Listen for authentication state changes
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
-      if (user) {
-        setUser(user);
+    const unsubscribe = onAuthStateChanged(auth, (u) => {
+      if (u) {
+        setUser(u);
         setLoading(false);
       } else {
-        // User is not authenticated, redirect to login
         navigate("/login");
       }
     });
-
     return () => unsubscribe();
   }, [navigate]);
 
@@ -38,10 +35,7 @@ export default function Dashboard() {
         console.error("Error fetching stats:", error);
       }
     };
-    
-    if (user) {
-      fetchData();
-    }
+    if (user) fetchData();
   }, [user]);
 
   const handleSignOut = async () => {
@@ -55,7 +49,6 @@ export default function Dashboard() {
 
   const handleAddSampleData = async () => {
     await addSampleData();
-    // Refresh the data
     const querySnapshot = await getDocs(collection(db, "stats"));
     const data = querySnapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
     setStats(data);
@@ -71,18 +64,7 @@ export default function Dashboard() {
     { name: "My Services", icon: "📋" }
   ];
 
-  if (loading) {
-    return (
-      <div className="dashboard">
-        <aside className="sidebar">
-          <h1 className="logo">Vin<span>Shik</span></h1>
-        </aside>
-        <main className="main">
-          <h2>Loading...</h2>
-        </main>
-      </div>
-    );
-  }
+  if (loading) return <h2>Loading...</h2>;
 
   return (
     <div className="dashboard">
@@ -91,15 +73,14 @@ export default function Dashboard() {
         <h1 className="logo">
           Vin<span>Shik</span>
         </h1>
-        
         <ul className="menu">
           {menuItems.map((item) => (
-            <li 
+            <li
               key={item.name}
               className={activeMenu === item.name ? "active" : ""}
               onClick={() => setActiveMenu(item.name)}
             >
-              {item.icon} {item.name}
+              <span className="menu-icon">{item.icon}</span> {item.name}
             </li>
           ))}
         </ul>
@@ -107,60 +88,53 @@ export default function Dashboard() {
 
       {/* Main content */}
       <main className="main">
-        {/* Top navbar */}
+        {/* Topbar */}
         <div className="topbar">
           <div>
-            <h2>Welcome back, {user?.displayName || user?.email?.split('@')[0] || 'User'} 👋</h2>
+            <h2>Welcome back, {user?.displayName || user?.email?.split("@")[0] || "User"} 👋</h2>
             <p>Here's what you need to focus on today</p>
           </div>
           <div className="topbar-icons">
-            <button>📧</button>
-            <button>⚙️</button>
-            <img 
-              src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png" 
-              alt="profile" 
-              className="avatar" 
+            <button className="icon-btn">📧</button>
+            <button className="icon-btn">⚙️</button>
+            <img
+              src={user?.photoURL || "https://cdn-icons-png.flaticon.com/512/3135/3135715.png"}
+              alt="profile"
+              className="avatar"
+              onClick={() => navigate("/profile")}
+              style={{ cursor: "pointer" }}
             />
           </div>
         </div>
 
-        {/* Add Sample Data Button (temporary) */}
+        {/* Add Sample Data Button */}
         {stats.length === 0 && (
-          <div style={{ marginBottom: "20px" }}>
-            <button 
-              onClick={handleAddSampleData}
-              style={{
-                padding: "10px 20px",
-                background: "#20c997",
-                color: "white",
-                border: "none",
-                borderRadius: "8px",
-                cursor: "pointer",
-                fontSize: "1rem"
-              }}
-            >
-              Add Sample Data
-            </button>
+          <div className="sample-data">
+            <button onClick={handleAddSampleData}>Add Sample Data</button>
           </div>
         )}
 
-        {/* Stats cards */}
+        {/* Stats grid */}
         <div className="stats-grid">
-          {stats.map((stat) => (
+        {stats.map((stat) => (
             <div key={stat.id} className="stat-card">
-              <div className="stat-header">
+            <div className="stat-header">
                 <span className="stat-title">{stat.title}</span>
                 <span className={`stat-change ${stat.positive ? "positive" : "negative"}`}>
-                  {stat.positive ? "↗" : "↘"} {stat.change}
+                {stat.positive ? "↗" : "↘"} {stat.change}
                 </span>
-              </div>
-              <h3 className="stat-value">{stat.value}</h3>
-              <div className="stat-bar" style={{ color: stat.color }}>
-                ▇▇▇
-              </div>
             </div>
-          ))}
+            <h3 className="stat-value">{stat.value}</h3>
+
+            <div className="stat-bars">
+                <span style={{ backgroundColor: stat.color }}></span>
+                <span style={{ backgroundColor: stat.color }}></span>
+                <span style={{ backgroundColor: stat.color }}></span>
+            </div>
+            </div>
+        ))}
         </div>
+
       </main>
     </div>
   );

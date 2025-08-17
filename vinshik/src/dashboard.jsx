@@ -55,13 +55,13 @@ export default function Dashboard() {
   };
 
   const menuItems = [
-    { name: "Home", icon: "🏠" },
-    { name: "Calendar", icon: "📅" },
-    { name: "Map", icon: "🗺️" },
-    { name: "Clients", icon: "👥" },
-    { name: "Jobs", icon: "💼" },
-    { name: "Quotes", icon: "✅" },
-    { name: "My Services", icon: "📋" }
+    { name: "Home", icon: "🏠", path: "/dashboard" },
+    { name: "Calendar", icon: "📅", path: "/calendar" },
+    { name: "Map", icon: "🗺️", path: "/map" },
+    { name: "Clients", icon: "👥", path: "/clients" },
+    { name: "Jobs", icon: "💼", path: "/jobs" },
+    { name: "Quotes", icon: "✅", path: "/quotes" },
+    { name: "My Services", icon: "📋", path: "/services" }
   ];
 
   if (loading) return <h2>Loading...</h2>;

@@ -78,7 +78,10 @@ export default function Dashboard() {
             <li
               key={item.name}
               className={activeMenu === item.name ? "active" : ""}
-              onClick={() => setActiveMenu(item.name)}
+              onClick={() => {
+                setActiveMenu(item.name);
+                navigate(item.path);
+              }}
             >
               <span className="menu-icon">{item.icon}</span> {item.name}
             </li>

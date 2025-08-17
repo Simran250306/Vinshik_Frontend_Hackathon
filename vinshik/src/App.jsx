@@ -17,3 +17,8 @@ function App() {
 }
 
 export default App;
+          {/* Personalized welcome message section */}
+          <div className="welcome">
+            <h2>Welcome back, Julie 👋</h2>
+            <p>Here's what you need to focus on today</p>
+          </div>

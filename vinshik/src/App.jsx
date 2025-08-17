@@ -10,6 +10,7 @@ import Signup from "./signup";
 // Dashboard Component
 function Dashboard() {
   const [stats, setStats] = useState([]);
+  const [showProfileDropdown, setShowProfileDropdown] = useState(false);
 
   // Fetch data from Firestore
   useEffect(() => {
@@ -20,6 +21,14 @@ function Dashboard() {
     };
     fetchData();
   }, []);
+
+  const handleLogout = async () => {
+    try {
+      await signOut(auth);
+    } catch (error) {
+      console.error("Logout error:", error);
+    }
+  };
 
   // Sample data for the dashboard cards
   const dashboardData = [

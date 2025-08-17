@@ -40,3 +40,5 @@ export default function App() {
     </div>
   );
 }
+
+export {db, auth};

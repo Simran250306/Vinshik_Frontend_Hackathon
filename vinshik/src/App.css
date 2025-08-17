@@ -1,4 +1,8 @@
-/* Reset */
+/* ========================================
+   GLOBAL RESET AND BASE STYLES
+   ======================================== */
+
+/* CSS Reset - Remove default browser styles */
 * {
   margin: 0;
   padding: 0;
@@ -6,18 +10,27 @@
   font-family: 'Inter', Arial, sans-serif;
 }
 
+/* Base body styles */
 body {
   background: #f8f9fb;
   color: #333;
 }
 
-/* Layout */
+/* ========================================
+   MAIN LAYOUT STRUCTURE
+   ======================================== */
+
+/* Main app container - Flexbox layout */
 .app {
   display: flex;
   height: 100vh;
 }
 
-/* Sidebar */
+/* ========================================
+   SIDEBAR NAVIGATION
+   ======================================== */
+
+/* Left sidebar container */
 .sidebar {
   width: 220px;
   background: #fff;
@@ -27,6 +40,7 @@ body {
   flex-direction: column;
 }
 
+/* Brand logo styling */
 .sidebar h1 {
   font-size: 24px;
   font-weight: bold;
@@ -34,12 +48,14 @@ body {
   color: #0891b2;
 }
 
+/* Navigation menu container */
 .sidebar nav {
   display: flex;
   flex-direction: column;
   gap: 8px;
 }
 
+/* Navigation button base styles */
 .sidebar nav button {
   display: flex;
   align-items: center;
@@ -56,11 +72,13 @@ body {
   text-align: left;
 }
 
+/* Navigation button hover state */
 .sidebar nav button:hover {
   background: #f1f5f9;
   color: #0f172a;
 }
 
+/* Active navigation button state */
 .sidebar nav .active {
   background: #f0f9ff;
   color: #0891b2;
@@ -75,19 +93,69 @@ body {
   color: #0891b2;
 }
 
-/* Main content */
+/* ========================================
+   MAIN CONTENT AREA
+   ======================================== */
+
+/* Main content container */
 .main {
   flex: 1;
-  padding: 24px 32px;
   overflow-y: auto;
+  display: flex;
+  flex-direction: column;
 }
 
-/* Header */
-.header {
+/* ========================================
+   TOP NAVIGATION BAR
+   ======================================== */
+
+/* Top navigation bar container */
+.top-nav {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 32px;
+  padding: 16px 32px;
+  background: white;
+  border-bottom: 1px solid #e2e8f0;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+/* Left side of navigation */
+.nav-left h2 {
+  font-size: 20px;
+  font-weight: 600;
+  color: #0f172a;
+  margin: 0;
+}
+
+/* Right side of navigation */
+.nav-right {
+  display: flex;
+  align-items: center;
+}
+
+/* ========================================
+   WELCOME SECTION
+   ======================================== */
+
+/* Welcome section container */
+.welcome-section {
+  padding: 32px;
+  background: #f8f9fb;
+}
+
+/* Welcome message styling */
+.welcome h2 {
+  font-size: 24px;
+  font-weight: 600;
+  margin-bottom: 4px;
+  color: #0f172a;
+}
+
+.welcome p {
+  color: #64748b;
+  font-size: 14px;
+  margin: 0;
 }
 
 .welcome h2 {
@@ -400,9 +468,14 @@ body {
   color: #dc2626;
 }
 
-/* Dashboard */
+/* ========================================
+   DASHBOARD CONTENT
+   ======================================== */
+
+/* Dashboard container */
 .dashboard {
-  margin-top: 20px;
+  padding: 32px;
+  flex: 1;
 }
 
 .stats {
@@ -552,12 +625,17 @@ body {
   text-decoration: underline;
 }
 
-/* Responsive design */
+/* ========================================
+   RESPONSIVE DESIGN
+   ======================================== */
+
 @media (max-width: 768px) {
+  /* Mobile layout adjustments */
   .app {
     flex-direction: column;
   }
   
+  /* Sidebar mobile adjustments */
   .sidebar {
     width: 100%;
     height: auto;
@@ -565,21 +643,44 @@ body {
     border-bottom: 1px solid #e5e5e5;
   }
   
+  /* Main content mobile adjustments */
   .main {
-    padding: 16px;
+    padding: 0;
   }
   
-  .header {
+  /* Top navigation mobile adjustments */
+  .top-nav {
+    padding: 12px 16px;
     flex-direction: column;
-    gap: 16px;
+    gap: 12px;
     align-items: flex-start;
   }
   
+  .nav-left h2 {
+    font-size: 18px;
+  }
+  
+  /* Welcome section mobile adjustments */
+  .welcome-section {
+    padding: 20px 16px;
+  }
+  
+  .welcome h2 {
+    font-size: 20px;
+  }
+  
+  /* Dashboard mobile adjustments */
+  .dashboard {
+    padding: 20px 16px;
+  }
+  
+  /* Stats grid mobile adjustments */
   .stats {
     grid-template-columns: 1fr;
     gap: 16px;
   }
 
+  /* Profile box mobile adjustments */
   .profile-box {
     width: 100%;
   }

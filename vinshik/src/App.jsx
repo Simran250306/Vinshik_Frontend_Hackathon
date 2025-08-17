@@ -427,14 +427,22 @@ function ProtectedRoute({ children }) {
   return children;
 }
 
-// Main App Component
+/**
+ * Main App Component
+ * Sets up routing and renders the appropriate component based on the current route
+ */
 export default function App() {
   return (
     <Router>
       <Routes>
+        {/* Redirect root to login page */}
         <Route path="/" element={<Navigate to="/login" replace />} />
+        
+        {/* Authentication routes */}
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
+        
+        {/* Protected dashboard route */}
         <Route 
           path="/dashboard" 
           element={

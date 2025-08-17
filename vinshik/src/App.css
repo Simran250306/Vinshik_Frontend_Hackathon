@@ -116,9 +116,9 @@ body {
   padding: 8px 15px; /* Padding inside the profile box */
   border-radius: 10px; /* Rounded corners for the profile box */
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
-  align-self: flex-end; /* Align to the right side of the header */
+  align-self: flex-start; /* Align to the left side of the header */
   margin-bottom: 20px; /* Add space between profile and welcome message */
-  width: 150px; /* Extend the box width to the left */
+  width: 100%; /* Extend the box width to fill the entire width */
   justify-content: flex-end; /* Align items to the right side of the box */
 }
 
